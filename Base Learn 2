@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract ControlStructures {
+    /// @notice Custom error for AfterHours
+    /// @param time The provided time that triggered the error
+    error AfterHours(uint256 time);
+
+    /// @notice Returns "Fizz", "Buzz", "FizzBuzz", or "Splat" based on the FizzBuzz rules
+    /// @param _number The input number to evaluate
+    /// @return result A string representing the result of FizzBuzz
+    function fizzBuzz(uint256 _number) public pure returns (string memory result) {
+        if (_number % 3 == 0 && _number % 5 == 0) {
+            return "FizzBuzz";
+        } else if (_number % 3 == 0) {
+            return "Fizz";
+        } else if (_number % 5 == 0) {
+            return "Buzz";
+        } else {
+            return "Splat";
+        }
+    }
+
+    /// @notice Returns appropriate messages based on the given time
+    /// @param _time The time in a 24-hour format (e.g., 800 for 8 AM)
+    /// @return message A string representing the appropriate response based on the time
+    function doNotDisturb(uint256 _time) public pure returns (string memory message) {
+        // Panic if _time is invalid or out of 24-hour range
+        assert(_time < 2400);
+
+        // If the time is outside of business hours
+        if (_time > 2200 || _time < 800) {
+            revert AfterHours(_time);
+        }
+
+        // If it's during lunch time
+        if (_time >= 1200 && _time <= 1259) {
+            revert("At lunch!");
+        }
+
+        // Return appropriate greeting based on time
+        if (_time >= 800 && _time <= 1199) {
+            return "Morning!";
+        } else if (_time >= 1300 && _time <= 1799) {
+            return "Afternoon!";
+        } else if (_time >= 1800 && _time <= 2200) {
+            return "Evening!";
+        }
+
+        // Default case: this will never be reached due to previous checks
+        return "Invalid time!";
+    }
+}
